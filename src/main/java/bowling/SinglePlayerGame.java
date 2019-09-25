@@ -7,6 +7,7 @@ import java.util.ArrayList;
  * lancés successifs d'<b>un seul et même</b> joueur, et de calculer le score
  * final de ce joueur
  */
+
 public class SinglePlayerGame {
 
 	/**
@@ -16,8 +17,9 @@ public class SinglePlayerGame {
 	}
         public int lances=0;
         public int tours=0;
-        public ArrayList playerScore= new ArrayList<Integer>();
-        public boolean lastTurnStrike = false;
+        public ArrayList<Tuple> playerScore= new ArrayList<Tuple>();
+        public boolean firstBall = true;
+        public int lastPoint = 0;
 
 
 	/**
@@ -27,8 +29,30 @@ public class SinglePlayerGame {
 	 * ce lancé
 	 */
 	public void lancer(int nombreDeQuillesAbattues) {
-            this.playerScore.add(lances,nombreDeQuillesAbattues);
-                this.lances+=1;                      
+            
+            Tuple points = new Tuple<>(0,0);
+            
+            points.x=nombreDeQuillesAbattues;
+            if(nombreDeQuillesAbattues == 10){
+                points.y=1;
+                this.playerScore.add(lances,points);               
+            }
+            else{
+                if(firstBall){
+                    points.y=0;
+                    firstBall=false;
+                    lastPoint=points.x;
+                }
+                else{
+                    if(lastPoint+points.x==10){
+                        points.y=2;
+                    }
+                    else{
+                        points.y=0;
+                    }
+                    firstBall=true;
+                }
+            }
 	}
     
 	/**
@@ -39,16 +63,16 @@ public class SinglePlayerGame {
 	public int score() {
                 return sum(playerScore);
 	}
-        public int sum(ArrayList<Integer> score){
-            int sum = 0;
+        public int sum(ArrayList<Tuple> score){
+            int sum = 0;      
             for(int i = 0; i < score.size(); i++){
-                if(score.get(i)==10){
-                    sum = sum+score.get(i)+score.get(i+1)+score.get(i+2);
+                sum += score.get(i).x; 
+                if(score.get(i).y==1){
+                    sum+=score.get(i+1).x+score.get(i+2).x;
                 }
-                else{
-                  sum = sum+score.get(i);  
+                if(score.get(i).y==2){
+                    sum+=score.get(i+1).x;                
                 }
-                
             }
             return sum;
         }
