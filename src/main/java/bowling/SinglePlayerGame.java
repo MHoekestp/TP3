@@ -35,13 +35,16 @@ public class SinglePlayerGame {
             points.x=nombreDeQuillesAbattues;
             if(nombreDeQuillesAbattues == 10){
                 points.y=1;
-                this.playerScore.add(lances,points);               
+                this.playerScore.add(lances,points);
+                lances+=1;
             }
             else{
                 if(firstBall){
                     points.y=0;
                     firstBall=false;
                     lastPoint=points.x;
+                    this.playerScore.add(lances,points);
+                    lances+=1;
                 }
                 else{
                     if(lastPoint+points.x==10){
@@ -50,6 +53,8 @@ public class SinglePlayerGame {
                     else{
                         points.y=0;
                     }
+                    this.playerScore.add(lances,points);
+                    lances+=1;
                     firstBall=true;
                 }
             }
@@ -61,12 +66,12 @@ public class SinglePlayerGame {
 	 * @return Le score du joueur
 	 */
 	public int score() {
-                return sum(playerScore);
+                return sum(this.playerScore);
 	}
         public int sum(ArrayList<Tuple> score){
             int sum = 0;      
             for(int i = 0; i < score.size(); i++){
-                sum += score.get(i).x; 
+                sum += score.get(i).x;
                 if(score.get(i).y==1){
                     sum+=score.get(i+1).x+score.get(i+2).x;
                 }
